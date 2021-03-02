@@ -1,59 +1,116 @@
 <template>
   <div class="hello">
-    <h1>{{ msg }}</h1>
-    <p>
-      For a guide and recipes on how to configure / customize this project,<br>
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
-    </p>
-    <h3>Installed CLI Plugins</h3>
-    <ul>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank" rel="noopener">babel</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-pwa" target="_blank" rel="noopener">pwa</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint" target="_blank" rel="noopener">eslint</a></li>
-    </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank" rel="noopener">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank" rel="noopener">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank" rel="noopener">Twitter</a></li>
-      <li><a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a></li>
-    </ul>
-    <h3>Ecosystem</h3>
-    <ul>
-      <li><a href="https://router.vuejs.org" target="_blank" rel="noopener">vue-router</a></li>
-      <li><a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a></li>
-      <li><a href="https://github.com/vuejs/vue-devtools#vue-devtools" target="_blank" rel="noopener">vue-devtools</a></li>
-      <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
-    </ul>
+    <h1>質因數分解</h1>
+    <input type = "number" min = "1" v-model="myNum"/>
+    <h1 v-html="pHTML"></h1>
+    <h4>
+      HTML碼: <span ref="h">{{ pHTML }}</span><button @click="copyHTML()">COPY!</button>
+    </h4>
+    <h4>
+      LATEX碼: <span ref="l">{{ pLATEX }}</span><button @click="copyLATEX()">COPY!</button>
+    </h4>
   </div>
 </template>
 
 <script>
 export default {
   name: 'HelloWorld',
-  props: {
-    msg: String
+  data () {
+    return {
+      myNum: 6
+    }
+  },
+  computed: {
+    pLATEX () {
+      var r = this.pFS
+      var latex = '$' + this.myNum + '=' + r.map((l) => {
+        return l[0] + '^{' + l[1] + '}'
+      }).join('') + '$'
+      return latex
+    },
+    pHTML () {
+      var r = this.pFS
+      var html = this.myNum + '=' + r.map((l) => {
+        return l[0] + '<sup>' + l[1] + '</sup>'
+      }).join('')
+      return html
+    },
+    pFactors () {
+      return this.getPF(this.myNum)
+    },
+    pFS () {
+      function getPower(p, n) {
+        var power = 0
+        while (n % p == 0) {
+          n /= p
+          power++
+        }
+        return power
+      }
+      var pfs = this.pFactors
+      var list = pfs.map((o) => {
+        return [
+          o,
+          getPower(o, this.myNum)
+        ]
+      })
+      return list
+    }
+  },
+  methods: {
+    selectText(element) {
+      var range;
+      if (document.selection) {
+        // IE
+        range = document.body.createTextRange();
+        range.moveToElementText(element);
+        range.select();
+      } else if (window.getSelection) {
+        range = document.createRange();
+        range.selectNode(element);
+        window.getSelection().removeAllRanges();
+        window.getSelection().addRange(range);
+      }
+    },
+    copyHTML () {
+      this.selectText(this.$refs.h); // e.g. <div ref="h">
+      document.execCommand('copy');
+      alert('HTML Code copied!');
+    },
+    copyLATEX () {
+      this.selectText(this.$refs.l); // e.g. <div ref="h">
+      document.execCommand('copy');
+      alert('LATEX Code copied!');
+    },
+    getPF (n) {
+      function range(k) {
+        var list = []
+        for (var i = 1; i < k + 1; i++) {
+          list.push(i)
+        }
+        return list
+      }
+      function factors(o) {
+        var ms = range(o)
+        return ms.filter((m) => {
+          return o % m == 0
+        })
+      }
+      function isPrime(p) {
+        return factors(p).length == 2
+      }
+      var nums = range(n)
+      return nums.filter((m) => {
+        return n % m == 0 && isPrime(m)
+      })
+    }
   }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
+input {
+  font-size: 22px;
 }
 </style>
