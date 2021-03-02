@@ -4,10 +4,10 @@
     <input type = "number" min = "1" v-model="myNum"/>
     <h1 v-html="pHTML"></h1>
     <h4>
-      HTML碼: <span ref="h">{{ pHTML }}</span><button @click="copyHTML()">COPY!</button>
+      HTML碼: <code ref="h">{{ pHTML }}</code><button @click="copyHTML()">COPY!</button>
     </h4>
     <h4>
-      LATEX碼: <span ref="l">{{ pLATEX }}</span><button @click="copyLATEX()">COPY!</button>
+      LATEX碼: <code ref="l">{{ pLATEX }}</code><button @click="copyLATEX()">COPY!</button>
     </h4>
   </div>
 </template>
@@ -112,5 +112,12 @@ export default {
 <style scoped>
 input {
   font-size: 22px;
+}
+
+code {
+  border-radius: 5px;
+  border: 1px solid #333;
+  background-color: #ddd;
+  padding: .2em;
 }
 </style>
