@@ -7,8 +7,13 @@
       HTML碼: <code ref="h">{{ pHTML }}</code><button @click="copyHTML()">COPY!</button>
     </h4>
     <h4>
-      LATEX碼: <code ref="l">{{ pLATEX }}</code><button @click="copyLATEX()">COPY!</button>
+      HTML碼: <code ref="h">{{ pHTML }}</code><button @click="copyHTML()">COPY!</button>
     </h4>
+    <hr/>
+    <h4>
+      小於等於{{myNum}}的質數: <code ref="h">{{ primes }}</code>
+    </h4>
+
   </div>
 </template>
 
@@ -55,9 +60,31 @@ export default {
         ]
       })
       return list
+    },
+    primes () {
+      return this.range(this.myNum).filter((o) => {
+        return this.isPrime(o)
+      })
     }
   },
   methods: {
+    factors (o) {
+      var ms = this.range(o)
+      return ms.filter((m) => {
+        return o % m == 0
+      })
+    },
+    range(k) {
+      k = parseInt(k)
+      var list = []
+      for (var i = 1; i < k + 1; i++) {
+        list.push(i)
+      }
+      return list
+    },
+    isPrime(p) {
+      return this.factors(p).length == 2
+    },
     selectText(element) {
       var range;
       if (document.selection) {
@@ -83,25 +110,9 @@ export default {
       alert('LATEX Code copied!');
     },
     getPF (n) {
-      function range(k) {
-        var list = []
-        for (var i = 1; i < k + 1; i++) {
-          list.push(i)
-        }
-        return list
-      }
-      function factors(o) {
-        var ms = range(o)
-        return ms.filter((m) => {
-          return o % m == 0
-        })
-      }
-      function isPrime(p) {
-        return factors(p).length == 2
-      }
-      var nums = range(n)
+      var nums = this.range(n)
       return nums.filter((m) => {
-        return n % m == 0 && isPrime(m)
+        return n % m == 0 && this.isPrime(m)
       })
     }
   }
