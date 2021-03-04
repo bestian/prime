@@ -7,7 +7,7 @@
       HTML碼: <code ref="h">{{ pHTML }}</code><button @click="copyHTML()">COPY!</button>
     </h4>
     <h4>
-      LATEX碼: <code ref="h">{{ pLATEX }}</code><button @click="copyLATEX()">COPY!</button>
+      LATEX碼: <code ref="l">{{ pLATEX }}</code><button @click="copyLATEX()">COPY!</button>
     </h4>
     <hr/>
     <h4>
